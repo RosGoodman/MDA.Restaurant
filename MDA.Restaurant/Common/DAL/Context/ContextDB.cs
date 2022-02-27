@@ -5,10 +5,10 @@ using Microsoft.Extensions.Configuration;
 
 namespace Common.DAL.Context;
 
-public class ContextDB : DbContext
+public class ContextDB : DbContext, IContextDB
 {
     public DbSet<TableModel> Tables { get; set; }
-    public DbSet<Restaurant> Restaurants { get; set;}
+    public DbSet<RestaurantModel> Restaurants { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -17,4 +17,7 @@ public class ContextDB : DbContext
             .Build();
         optionsBuilder.UseNpgsql(configuration.GetConnectionString("Default"));
     }
+
+    public void ContextSaveChanges() => SaveChanges();
+    public void ContextEntryModified(object entity) => Entry(entity).State = EntityState.Modified;
 }

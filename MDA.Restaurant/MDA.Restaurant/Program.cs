@@ -1,3 +1,4 @@
+using Common.DAL.Context;
 using Common.DAL.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 services.AddSingleton(typeof(ITableRepository), typeof(TableRepository));
+services.AddSingleton(typeof(IRestaurantRepository), typeof(RestaurantRepository));
+services.AddSingleton(typeof(IContextDB), typeof(ContextDB));
 
 var app = builder.Build();
 

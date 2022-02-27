@@ -16,11 +16,11 @@ public class TableModel
 
     /// <summary> Состояние стола. </summary>
     [Required]
-    public State State { get; private set; }
+    public State State { get; set; }
 
     /// <summary> Кол-во мест. </summary>
     [Required]
-    public int SeatsCount { get; }
+    public int SeatsCount { get; set; }
 
     /// <summary> Навигационный ключ. </summary>
     [ForeignKey("Restaurant")]
