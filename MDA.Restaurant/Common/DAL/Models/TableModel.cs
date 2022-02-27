@@ -23,19 +23,10 @@ public class TableModel
     public int SeatsCount { get; set; }
 
     /// <summary> Навигационный ключ. </summary>
-    [ForeignKey("Restaurant")]
-    public int RestaurantId { get; set; }
+    [ForeignKey("RestaurantModel")]
+    public int RestaurantModelId { get; set; }
 
     #endregion
-
-    /// <summary> Конструктр класса. </summary>
-    /// <param name="id"> Id стола. </param>
-    public TableModel(int id)
-    {
-        Id = id;
-        State = State.Free;
-        SeatsCount = new Random().Next(2, 5);
-    }
 
     /// <summary> Назначить состояние стола. </summary>
     /// <param name="state"> Состояние стола. </param>

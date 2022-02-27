@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Common.DAL.Models;
 
@@ -14,12 +15,5 @@ public class RestaurantModel
     public string Name { get; set; }
     /// <summary> Список столов. </summary>
     [Required]
-    public List<TableModel> Tables { get; private set; }
-
-    /// <summary> Конструктор класса. </summary>
-    public RestaurantModel()
-    {
-        for (ushort i = 1; i <= 10; i++)
-            Tables.Add(new TableModel(i));
-    }
+    public List<TableModel> Tables { get; set; }
 }

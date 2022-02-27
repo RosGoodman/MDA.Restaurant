@@ -1,5 +1,6 @@
 ﻿using Common.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Common.DAL.Context
 {
@@ -10,5 +11,6 @@ namespace Common.DAL.Context
 
         public void ContextSaveChanges();
         public void ContextEntryModified(object entity);
+        public IDbContextTransaction ContextBeginTransaction();
     }
 }

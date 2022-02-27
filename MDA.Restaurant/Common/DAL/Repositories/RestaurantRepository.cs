@@ -59,7 +59,8 @@ public class RestaurantRepository : IRestaurantRepository
     {
         try
         {
-            return await _context.Restaurants.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var rest = await _context.Restaurants.Where(x => x.Id == id).FirstOrDefaultAsync();
+            return rest;
         }
         catch (Exception ex) { _logger.LogError(ex, "Ошибка при попытке получить экземпляр ресторана из БД."); }
         return null;

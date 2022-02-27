@@ -1,6 +1,7 @@
 ﻿
 using Common.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 
 namespace Common.DAL.Context;
@@ -20,4 +21,5 @@ public class ContextDB : DbContext, IContextDB
 
     public void ContextSaveChanges() => SaveChanges();
     public void ContextEntryModified(object entity) => Entry(entity).State = EntityState.Modified;
+    public IDbContextTransaction ContextBeginTransaction() => Database.BeginTransaction();
 }

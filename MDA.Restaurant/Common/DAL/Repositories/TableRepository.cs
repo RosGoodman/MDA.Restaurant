@@ -6,11 +6,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Common.DAL.Repositories;
 
+/// <summary> Интерфейс для контейнера. </summary>
 public interface ITableRepository : IRepository<TableModel>
 {
+    /// <summary> Обновить данные экземпляра. </summary>
+    /// <param name="entity"> Экземпляр класса с новыми данными. </param>
     public void Update(TableModel entity);
+    public Task<int> BookingTableAsync(int seatsCount);
+    public int BookingTable(int seatsCount);
 }
 
+/// <summary> Репозиторий TableModel. </summary>
 public class TableRepository : ITableRepository
 {
     private readonly ILogger _logger;
@@ -26,9 +32,56 @@ public class TableRepository : ITableRepository
         _logger.LogDebug(1, "Логгер встроен в TableRepository");
     }
 
+    /// <summary> Забронировать столик. Асинхронная операция. </summary>
+    /// <param name="seatsCount"> Минимальное кол-во мест. </param>
+    /// <returns> Номер забронированного столика или -1. </returns>
+    public int BookingTable(int seatsCount)
+    {
+        try
+        {
+            using var transaction = _context.ContextBeginTransaction();
+            var table = _context.Tables.Where(t => t.State == 0 && t.SeatsCount >= seatsCount).FirstOrDefault();
+            Thread.Sleep(5000);
+            if (table is null || table.State == Enums.State.Booked) return -1;
+
+            //обновление состояния стола в БД.
+            table.State = Enums.State.Booked;
+            UpdateAsync(table);
+            transaction.Commit();
+
+            return table.Id;
+        }
+        catch (Exception ex) { _logger.LogError(ex, "ошибка при попытке бронирования столика."); }
+        return -1;
+    }
+
+    /// <summary> Забронировать столик. Асинхронная операция. </summary>
+    /// <param name="seatsCount"> Минимальное кол-во мест. </param>
+    /// <returns> Номер забронированного столика или -1. </returns>
+    public async Task<int> BookingTableAsync(int seatsCount)
+    {
+        try
+        {
+            using var transaction = _context.ContextBeginTransaction();
+
+            var table = await _context.Tables.Where(t => t.State == 0 && t.SeatsCount >= seatsCount).FirstOrDefaultAsync();
+            Thread.Sleep(5000);
+            if (table is null || table.State == Enums.State.Booked) return -1;
+
+            //обновление состояния стола в БД.
+            table.State = Enums.State.Booked;
+            UpdateAsync(table);
+            transaction.Commit();
+
+            return table.Id;
+        }
+        catch (Exception ex) { _logger.LogError(ex, "ошибка при попытке бронирования столика."); }
+        return -1;
+    }
+
     /// <summary> Записать экземпляр в БД. </summary>
     /// <param name="entity"> Записываемый ресторан. </param>
-    public async void CreateAsync(TableModel  entity)
+    public async void CreateAsync(TableModel entity)
     {
         try
         {
@@ -56,11 +109,12 @@ public class TableRepository : ITableRepository
     /// <summary> Получить экземпляр стола по ID. </summary>
     /// <param name="id"> ID стола. </param>
     /// <returns> Полученный экземпляр. </returns>
-    public async Task<TableModel > GetByIdAsync(int id)
+    public async Task<TableModel> GetByIdAsync(int id)
     {
         try
         {
-            return await _context.Tables.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var table = await _context.Tables.Where(x => x.Id == id).FirstOrDefaultAsync();
+            return table;
         }
         catch (Exception ex) { _logger.LogError(ex, "Ошибка при попытке получить экземпляр стола из БД."); }
         return null;

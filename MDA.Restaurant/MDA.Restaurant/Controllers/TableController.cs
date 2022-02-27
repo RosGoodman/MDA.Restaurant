@@ -1,5 +1,6 @@
 ﻿using Common.DAL.Models;
 using Common.DAL.Repositories;
+using MDA.Restaurant.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MDA.Restaurant.Controllers;
@@ -39,22 +40,37 @@ public class TableController : Controller
     {
         _logger.LogInformation(1, "Выполнение запроса на получение экземпляра TableModel из БД.");
         var table = await _repository.GetByIdAsync(id);
-        return View(table);
+        if(table is null) return NotFound();
+        return Ok(table);
     }
 
-    [HttpPatch("UpdateTableAsync")]
-    public IActionResult UpdateAsync(TableModel table)
+    [HttpPatch("BookingTableAsync")]
+    public async Task<IActionResult> BookingTableAsync(int seatsCount)
     {
-        _logger.LogInformation(1, "Выполнение запроса на асинхронное обновление экземпляра TableModel в БД.");
-        _repository.UpdateAsync(table);
-        return Ok();
+        _logger.LogInformation(1, "Выполнение запроса на асинхронное бронирование экземпляра TableModel в БД.");
+        new ConsoleWriter().PhoneGreeting();
+        int tableNumb = await _repository.BookingTableAsync(seatsCount);
+
+        if (tableNumb == -1) return Ok("К сожалению сейчас все столики заняты.");
+        return Ok($"Готово! Ваш столик номер {tableNumb}");
     }
 
-    [HttpPatch("UpdateTable")]
+    [HttpPatch("BookingTable")]
+    public IActionResult BookingTable(int seatsCount)
+    {
+        _logger.LogInformation(1, "Выполнение запроса на бронирование экземпляра TableModel в БД.");
+        new ConsoleWriter().MessageGreeting();
+        int tableNumb = _repository.BookingTable(seatsCount);
+
+        if (tableNumb == -1) return Ok("К сожалению сейчас все столики заняты.");
+        return Ok($"УВЕДОМЛЕНИЕ: Готово! Ваш столик номер {tableNumb}");
+    }
+
+    [HttpPatch("Update")]
     public IActionResult Update(TableModel table)
     {
         _logger.LogInformation(1, "Выполнение запроса на обновление экземпляра TableModel в БД.");
-        _repository.Update(table);
+        _repository.UpdateAsync(table);
         return Ok();
     }
 }

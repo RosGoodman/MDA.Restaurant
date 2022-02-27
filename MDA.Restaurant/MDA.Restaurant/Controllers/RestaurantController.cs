@@ -19,10 +19,10 @@ public class RestaurantController : Controller
     }
 
     [HttpPost("CreateRestaurant")]
-    public IActionResult Create(RestaurantModel table)
+    public IActionResult Create(RestaurantModel restaurant)
     {
         _logger.LogInformation(1, "Выполнение запроса на создание экземпляра RestaurantModel в БД.");
-        _repository.CreateAsync(table);
+        _repository.CreateAsync(restaurant);
         return Ok();
     }
 
@@ -38,8 +38,9 @@ public class RestaurantController : Controller
     public async Task<IActionResult> Get(int id)
     {
         _logger.LogInformation(1, "Выполнение запроса на получение экземпляра RestaurantModel из БД.");
-        var table = await _repository.GetByIdAsync(id);
-        return View(table);
+        var restaurant = await _repository.GetByIdAsync(id);
+        if (restaurant is null) return NotFound();
+        return Ok(restaurant);
     }
 
     [HttpPatch("UpdateRestaurant")]
