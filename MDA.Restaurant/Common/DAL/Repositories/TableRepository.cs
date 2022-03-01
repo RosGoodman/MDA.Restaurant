@@ -28,6 +28,8 @@ public interface ITableRepository : IRepository<TableModel>
     /// <param name="tableNumb"> Номер столика. </param>
     /// <returns> Результат операции. </returns>
     public bool BookingTableByNumb(int tableNumb);
+    /// <summary> Снять все брони столиков. Асинхронно. </summary>
+    public void RemovingAllReservationsAsync();
 }
 
 /// <summary> Репозиторий TableModel. </summary>
@@ -191,6 +193,28 @@ public class TableRepository : ITableRepository
         }
         catch (Exception ex) { _logger.LogError(ex, "Ошибка при попытке получить экземпляр стола из БД."); }
         return null;
+    }
+
+    /// <summary> Снять все брони столиков. Асинхронно. </summary>
+    public async void RemovingAllReservationsAsync()
+    {
+        try
+        {
+            var transaction = _context.ContextBeginTransaction();
+
+            var tables = await _context.Tables.Where(t => t.State == Enums.State.Booked).ToListAsync();
+            if (tables is null) return;
+            foreach (var table in tables)
+            {
+                table.State = Enums.State.Free;
+                _context.Tables.Update(table);
+                _context.ContextEntryModified(table);
+                _context.ContextSaveChanges();
+            }
+
+            transaction.Commit();
+        }
+        catch(Exception ex) { _logger.LogError(ex, "Ошибка при попытке снять все брони."); }
     }
 
     /// <summary> Обновить данные стола в БД. </summary>
