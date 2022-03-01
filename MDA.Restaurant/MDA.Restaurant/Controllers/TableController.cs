@@ -66,6 +66,28 @@ public class TableController : Controller
         return Ok($"УВЕДОМЛЕНИЕ: Готово! Ваш столик номер {tableNumb}");
     }
 
+    [HttpPatch("BookingTableByNumbAsync")]
+    public async Task<IActionResult> BookingTableByNumbAsync(int tableNumb)
+    {
+        _logger.LogInformation(1, "Выполнение запроса на асинхронное бронирование экземпляра TableModel в БД.");
+        new ConsoleWriter().PhoneGreeting();
+        bool result = await _repository.BookingTableByNumbAsync(tableNumb);
+
+        if (!result) return Ok("К сожалению сейчас все столики заняты.");
+        return Ok($"Готово! Ваш столик номер {tableNumb}");
+    }
+
+    [HttpPatch("BookingTableByNumb")]
+    public IActionResult BookingTableByNumb(int tableNumb)
+    {
+        _logger.LogInformation(1, "Выполнение запроса на бронирование экземпляра TableModel в БД.");
+        new ConsoleWriter().MessageGreeting();
+        bool result = _repository.BookingTableByNumb(tableNumb);
+
+        if (!result) return Ok("К сожалению сейчас все столики заняты.");
+        return Ok($"УВЕДОМЛЕНИЕ: Готово! Ваш столик номер {tableNumb}");
+    }
+
     [HttpPatch("Update")]
     public IActionResult Update(TableModel table)
     {

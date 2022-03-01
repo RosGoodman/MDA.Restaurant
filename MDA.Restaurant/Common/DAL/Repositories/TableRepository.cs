@@ -12,8 +12,22 @@ public interface ITableRepository : IRepository<TableModel>
     /// <summary> Обновить данные экземпляра. </summary>
     /// <param name="entity"> Экземпляр класса с новыми данными. </param>
     public void Update(TableModel entity);
+    /// <summary> Забронировать столик. Асинхронная операция. </summary>
+    /// <param name="seatsCount"> Минимальное кол-во мест. </param>
+    /// <returns> Номер забронированного столика или -1. </returns>
     public Task<int> BookingTableAsync(int seatsCount);
+    /// <summary> Забронировать столик. </summary>
+    /// <param name="seatsCount"> Минимальное кол-во мест. </param>
+    /// <returns> Номер забронированного столика или -1. </returns>
     public int BookingTable(int seatsCount);
+    /// <summary> Забронировать столик по его номеру. </summary>
+    /// <param name="tableNumb"> Номер столика. </param>
+    /// <returns> Результат операции. </returns>
+    public Task<bool> BookingTableByNumbAsync(int tableNumb);
+    /// <summary> Забронировать столик по его номеру. </summary>
+    /// <param name="tableNumb"> Номер столика. </param>
+    /// <returns> Результат операции. </returns>
+    public bool BookingTableByNumb(int tableNumb);
 }
 
 /// <summary> Репозиторий TableModel. </summary>
@@ -32,7 +46,7 @@ public class TableRepository : ITableRepository
         _logger.LogDebug(1, "Логгер встроен в TableRepository");
     }
 
-    /// <summary> Забронировать столик. Асинхронная операция. </summary>
+    /// <summary> Забронировать столик. </summary>
     /// <param name="seatsCount"> Минимальное кол-во мест. </param>
     /// <returns> Номер забронированного столика или -1. </returns>
     public int BookingTable(int seatsCount)
@@ -41,6 +55,9 @@ public class TableRepository : ITableRepository
         {
             using var transaction = _context.ContextBeginTransaction();
             var table = _context.Tables.Where(t => t.State == 0 && t.SeatsCount >= seatsCount).FirstOrDefault();
+
+            //задержка для имитации работы сотрудников
+            //ToDo: delete if not necessary
             Thread.Sleep(5000);
             if (table is null || table.State == Enums.State.Booked) return -1;
 
@@ -65,6 +82,9 @@ public class TableRepository : ITableRepository
             using var transaction = _context.ContextBeginTransaction();
 
             var table = await _context.Tables.Where(t => t.State == 0 && t.SeatsCount >= seatsCount).FirstOrDefaultAsync();
+
+            //задержка для имитации работы сотрудников
+            //ToDo: delete if not necessary
             Thread.Sleep(5000);
             if (table is null || table.State == Enums.State.Booked) return -1;
 
@@ -77,6 +97,59 @@ public class TableRepository : ITableRepository
         }
         catch (Exception ex) { _logger.LogError(ex, "ошибка при попытке бронирования столика."); }
         return -1;
+    }
+
+    /// <summary> Забронировать столик по его номеру. </summary>
+    /// <param name="tableNumb"> Номер столика. </param>
+    /// <returns> Результат операции. </returns>
+    public bool BookingTableByNumb(int tableNumb)
+    {
+        try
+        {
+            using var transaction = _context.ContextBeginTransaction();
+            var table = _context.Tables.Where(t => t.State == 0 && t.Id >= tableNumb).FirstOrDefault();
+
+            //задержка для имитации работы сотрудников
+            //ToDo: delete if not necessary
+            Thread.Sleep(5000);
+            if (table is null || table.State == Enums.State.Booked) return false;
+
+            //обновление состояния стола в БД.
+            table.State = Enums.State.Booked;
+            UpdateAsync(table);
+            transaction.Commit();
+
+            return true;
+        }
+        catch (Exception ex) { _logger.LogError(ex, "ошибка при попытке бронирования столика."); }
+        return false;
+    }
+
+    /// <summary> Забронировать столик по его номеру. Асинхронно. </summary>
+    /// <param name="tableNumb"> Номер столика. </param>
+    /// <returns> Результат операции. </returns>
+    public async Task<bool> BookingTableByNumbAsync(int tableNumb)
+    {
+        try
+        {
+            using var transaction = _context.ContextBeginTransaction();
+
+            var table = await _context.Tables.Where(t => t.State == 0 && t.Id >= tableNumb).FirstOrDefaultAsync();
+
+            //задержка для имитации работы сотрудников
+            //ToDo: delete if not necessary
+            Thread.Sleep(5000);
+            if (table is null || table.State == Enums.State.Booked) return false;
+
+            //обновление состояния стола в БД.
+            table.State = Enums.State.Booked;
+            UpdateAsync(table);
+            transaction.Commit();
+
+            return true;
+        }
+        catch (Exception ex) { _logger.LogError(ex, "ошибка при попытке бронирования столика."); }
+        return false;
     }
 
     /// <summary> Записать экземпляр в БД. </summary>
