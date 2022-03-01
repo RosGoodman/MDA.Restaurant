@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MDA.Restaurant</name>
+    </assembly>
+    <members>
+        <member name="T:MDA.Restaurant.Controllers.TableController">
+            <summary> Контроллер столиков. </summary>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.TableController.Create(Common.DAL.Models.TableModel)">
+            <summary> Создать столик. </summary>
+            <param name="table"> Экземпляр столика. </param>
+            <returns></returns>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.TableController.Delete(System.Int32)">
+            <summary> Удалить столик по номеру. </summary>
+            <param name="id"> Номер столика. </param>
+            <returns></returns>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.TableController.Get(System.Int32)">
+            <summary> Получить столик по номеру. </summary>
+            <param name="id"> Номер столика. </param>
+            <returns> Экземпляр столика. </returns>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.TableController.BookingTableAsync(System.Int32)">
+            <summary> Зарезервировать столик по кол-ву мест. Асинхронно. </summary>
+            <param name="seatsCount"> Минимальное кол-во мест. </param>
+            <returns> Текстовое описание результата операции. </returns>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.TableController.BookingTable(System.Int32)">
+            <summary> Зарезервировать столик по кол-ву мест. </summary>
+            <param name="seatsCount"> Минимальное кол-во мест. </param>
+            <returns> Текстовое описание результата операции. </returns>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.TableController.BookingTableByNumbAsync(System.Int32)">
+            <summary> Зарезервировать столик по номеру. Асинхронно. </summary>
+            <param name="tableNumb"> Номер столика. </param>
+            <returns> Текстовое описание результата операции. </returns>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.TableController.BookingTableByNumb(System.Int32)">
+            <summary> Зарезервировать столик по номеру. </summary>
+            <param name="tableNumb"> Номер столика. </param>
+            <returns> Текстовое описание результата операции. </returns>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.TableController.Update(Common.DAL.Models.TableModel)">
+            <summary> Обновить данные столика. </summary>
+            <param name="table"> Экземпляр столика с новыми данными. </param>
+            <returns></returns>
+        </member>
+        <member name="T:MDA.Restaurant.Jobs.JobSchedule">
+            <summary> DTO-класс для хранения расписания запуска. </summary>
+        </member>
+        <member name="T:MDA.Restaurant.Jobs.RemovingTheReservationsJob">
+            <summary> Задача по снятию бронирования столиков. </summary>
+        </member>
+        <member name="T:MDA.Restaurant.Services.ConsoleWriter">
+            <summary> Класс для вывода на консоль сообщений. </summary>
+        </member>
+    </members>
+</doc>
