@@ -4,6 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>D:\CSharp\Методички\Message-driven architecture\Homeworks\MDA.Restaurant\MDA.Restaurant\SimpleSwagger.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

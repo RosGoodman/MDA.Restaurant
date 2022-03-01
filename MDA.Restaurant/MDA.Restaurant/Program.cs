@@ -14,7 +14,11 @@ var services = builder.Services;
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    var filePath = Path.Combine(AppContext.BaseDirectory, "SimpleSwagger.xml");
+    c.IncludeXmlComments(filePath, includeControllerXmlComments: true);
+});
 
 services.AddSingleton(typeof(ITableRepository), typeof(TableRepository));
 services.AddSingleton(typeof(IRestaurantRepository), typeof(RestaurantRepository));
@@ -37,7 +41,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");
+    });
 }
 
 app.UseHttpsRedirection();

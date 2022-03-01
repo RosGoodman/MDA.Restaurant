@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MDA.Restaurant.Controllers;
 
+/// <summary> Контроллер столиков. </summary>
 [Route("api/[controller]")]
 [ApiController]
 public class TableController : Controller
@@ -12,6 +13,9 @@ public class TableController : Controller
     private readonly ITableRepository _repository;
     private readonly ILogger _logger;
 
+    /// <summary> Конструктор контроллера. </summary>
+    /// <param name="repository"> Репозиторий. </param>
+    /// <param name="logger"> Логгер. </param>
     public TableController(ITableRepository repository, ILogger<TableController> logger)
     {
         _repository = repository;
@@ -19,6 +23,9 @@ public class TableController : Controller
         _logger.LogDebug(1, "Логгер встроен в TableController");
     }
 
+    /// <summary> Создать столик. </summary>
+    /// <param name="table"> Экземпляр столика. </param>
+    /// <returns></returns>
     [HttpPost("CreateTable")]
     public IActionResult Create(TableModel table)
     {
@@ -27,6 +34,9 @@ public class TableController : Controller
         return Ok();
     }
 
+    /// <summary> Удалить столик по номеру. </summary>
+    /// <param name="id"> Номер столика. </param>
+    /// <returns></returns>
     [HttpPost("DeleteTable")]
     public IActionResult Delete(int id)
     {
@@ -35,6 +45,9 @@ public class TableController : Controller
         return Ok();
     }
 
+    /// <summary> Получить столик по номеру. </summary>
+    /// <param name="id"> Номер столика. </param>
+    /// <returns> Экземпляр столика. </returns>
     [HttpGet("GetTable")]
     public async Task<IActionResult> Get(int id)
     {
@@ -44,6 +57,9 @@ public class TableController : Controller
         return Ok(table);
     }
 
+    /// <summary> Зарезервировать столик по кол-ву мест. Асинхронно. </summary>
+    /// <param name="seatsCount"> Минимальное кол-во мест. </param>
+    /// <returns> Текстовое описание результата операции. </returns>
     [HttpPatch("BookingTableAsync")]
     public async Task<IActionResult> BookingTableAsync(int seatsCount)
     {
@@ -55,6 +71,9 @@ public class TableController : Controller
         return Ok($"Готово! Ваш столик номер {tableNumb}");
     }
 
+    /// <summary> Зарезервировать столик по кол-ву мест. </summary>
+    /// <param name="seatsCount"> Минимальное кол-во мест. </param>
+    /// <returns> Текстовое описание результата операции. </returns>
     [HttpPatch("BookingTable")]
     public IActionResult BookingTable(int seatsCount)
     {
@@ -66,6 +85,9 @@ public class TableController : Controller
         return Ok($"УВЕДОМЛЕНИЕ: Готово! Ваш столик номер {tableNumb}");
     }
 
+    /// <summary> Зарезервировать столик по номеру. Асинхронно. </summary>
+    /// <param name="tableNumb"> Номер столика. </param>
+    /// <returns> Текстовое описание результата операции. </returns>
     [HttpPatch("BookingTableByNumbAsync")]
     public async Task<IActionResult> BookingTableByNumbAsync(int tableNumb)
     {
@@ -77,6 +99,9 @@ public class TableController : Controller
         return Ok($"Готово! Ваш столик номер {tableNumb}");
     }
 
+    /// <summary> Зарезервировать столик по номеру. </summary>
+    /// <param name="tableNumb"> Номер столика. </param>
+    /// <returns> Текстовое описание результата операции. </returns>
     [HttpPatch("BookingTableByNumb")]
     public IActionResult BookingTableByNumb(int tableNumb)
     {
@@ -88,6 +113,9 @@ public class TableController : Controller
         return Ok($"УВЕДОМЛЕНИЕ: Готово! Ваш столик номер {tableNumb}");
     }
 
+    /// <summary> Обновить данные столика. </summary>
+    /// <param name="table"> Экземпляр столика с новыми данными. </param>
+    /// <returns></returns>
     [HttpPatch("Update")]
     public IActionResult Update(TableModel table)
     {

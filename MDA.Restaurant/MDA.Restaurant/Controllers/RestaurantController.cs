@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MDA.Restaurant.Controllers;
 
+/// <summary> Контроллер ресторана. </summary>
 [Route("api/[controller]")]
 [ApiController]
 public class RestaurantController : Controller
@@ -11,6 +12,9 @@ public class RestaurantController : Controller
     private readonly IRestaurantRepository _repository;
     private readonly ILogger _logger;
 
+    /// <summary> Конструктор класса. </summary>
+    /// <param name="repository"> Репозиторий. </param>
+    /// <param name="logger"> Логгер. </param>
     public RestaurantController(IRestaurantRepository repository, ILogger<RestaurantController> logger)
     {
         _repository = repository;
@@ -18,6 +22,9 @@ public class RestaurantController : Controller
         _logger.LogDebug(1, "Логгер встроен в RestaurantController");
     }
 
+    /// <summary> Создать ресторан. </summary>
+    /// <param name="restaurant"> Экземпляр ресторана. </param>
+    /// <returns></returns>
     [HttpPost("CreateRestaurant")]
     public IActionResult Create(RestaurantModel restaurant)
     {
@@ -26,6 +33,9 @@ public class RestaurantController : Controller
         return Ok();
     }
 
+    /// <summary> Удалить ресторан по ID. </summary>
+    /// <param name="id"> ID ресторана. </param>
+    /// <returns></returns>
     [HttpPost("DeleteRestaurant")]
     public IActionResult Delete(int id)
     {
@@ -34,6 +44,9 @@ public class RestaurantController : Controller
         return Ok();
     }
 
+    /// <summary> Получить ресторан по ID. </summary>
+    /// <param name="id"> ID ресторана. </param>
+    /// <returns> Экземпляр ресторана. </returns>
     [HttpGet("GetRestaurant")]
     public async Task<IActionResult> Get(int id)
     {
@@ -43,6 +56,9 @@ public class RestaurantController : Controller
         return Ok(restaurant);
     }
 
+    /// <summary> Обновить данные ресторана. </summary>
+    /// <param name="table"> Экземпляр с новыми данными. </param>
+    /// <returns></returns>
     [HttpPatch("UpdateRestaurant")]
     public IActionResult UpdateAsync(RestaurantModel table)
     {
