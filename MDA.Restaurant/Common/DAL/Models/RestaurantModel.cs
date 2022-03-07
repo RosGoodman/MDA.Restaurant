@@ -10,9 +10,11 @@ public class RestaurantModel
     /// <summary> Id в БД. </summary>
     [Key]
     public int Id { get; set; }
+
     /// <summary> Наименование ресторана. </summary>
     [Required]
     public string Name { get; set; }
+
     /// <summary> Список столов. </summary>
     [Required]
     public List<TableModel> Tables { get; set; }

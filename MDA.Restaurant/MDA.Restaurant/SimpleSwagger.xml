@@ -4,8 +4,41 @@
         <name>MDA.Restaurant</name>
     </assembly>
     <members>
+        <member name="T:MDA.Restaurant.Controllers.RestaurantController">
+            <summary> Контроллер ресторана. </summary>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.RestaurantController.#ctor(Common.DAL.Repositories.IRestaurantRepository,Microsoft.Extensions.Logging.ILogger{MDA.Restaurant.Controllers.RestaurantController})">
+            <summary> Конструктор класса. </summary>
+            <param name="repository"> Репозиторий. </param>
+            <param name="logger"> Логгер. </param>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.RestaurantController.Create(Common.DAL.Models.RestaurantModel)">
+            <summary> Создать ресторан. </summary>
+            <param name="restaurant"> Экземпляр ресторана. </param>
+            <returns></returns>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.RestaurantController.Delete(System.Int32)">
+            <summary> Удалить ресторан по ID. </summary>
+            <param name="id"> ID ресторана. </param>
+            <returns></returns>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.RestaurantController.Get(System.Int32)">
+            <summary> Получить ресторан по ID. </summary>
+            <param name="id"> ID ресторана. </param>
+            <returns> Экземпляр ресторана. </returns>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.RestaurantController.UpdateAsync(Common.DAL.Models.RestaurantModel)">
+            <summary> Обновить данные ресторана. </summary>
+            <param name="table"> Экземпляр с новыми данными. </param>
+            <returns></returns>
+        </member>
         <member name="T:MDA.Restaurant.Controllers.TableController">
             <summary> Контроллер столиков. </summary>
+        </member>
+        <member name="M:MDA.Restaurant.Controllers.TableController.#ctor(Common.DAL.Repositories.ITableRepository,Microsoft.Extensions.Logging.ILogger{MDA.Restaurant.Controllers.TableController})">
+            <summary> Конструктор контроллера. </summary>
+            <param name="repository"> Репозиторий. </param>
+            <param name="logger"> Логгер. </param>
         </member>
         <member name="M:MDA.Restaurant.Controllers.TableController.Create(Common.DAL.Models.TableModel)">
             <summary> Создать столик. </summary>
@@ -55,6 +88,12 @@
         </member>
         <member name="T:MDA.Restaurant.Services.ConsoleWriter">
             <summary> Класс для вывода на консоль сообщений. </summary>
+        </member>
+        <member name="M:MDA.Restaurant.Services.ConsoleWriter.PhoneGreeting">
+            <summary> Приветствие при звонке. </summary>
+        </member>
+        <member name="M:MDA.Restaurant.Services.ConsoleWriter.MessageGreeting">
+            <summary> Приветствие при сообщении. </summary>
         </member>
     </members>
 </doc>
