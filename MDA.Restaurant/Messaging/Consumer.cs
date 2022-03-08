@@ -1,41 +1,46 @@
 ﻿
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Text;
 
 namespace Messaging
 {
     public class Consumer : IDisposable
     {
-        private readonly string _queueName;
-        private readonly IConnection _connection;
-        private readonly IModel _channel;
+        private string _queueName;
+        private string _hostName;
 
         private bool _disposed = false;
 
-        public Consumer(string queueName, string hostName)
+        public string MyProperty { get; set; }
+
+        public Consumer SetQueueAndHost(string queueName, string hostName)
         {
             _queueName = queueName;
-            var factory = new ConnectionFactory() { HostName = hostName };
-
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
+            _hostName = hostName;
+            return this;
         }
 
-        public void Receive(EventHandler<BasicDeliverEventArgs> reseiveCallback)
+        public void Receive(EventHandler<BasicDeliverEventArgs> receiveCallBack)
         {
+            var factory = new ConnectionFactory() { HostName = _hostName };
+            using var connection = factory.CreateConnection();
+            using var channel = connection.CreateModel();
+
             //объявление обменника
-            _channel.ExchangeDeclare("direct_exchange", "direct");
+            channel.ExchangeDeclare("direct_exchange", "direct");
 
             //объявление очереди
-            _channel.QueueDeclare(_queueName, false, false, false, null);
+            channel.QueueDeclare(_queueName, true, false, false, null);
 
             //привязка
-            _channel.QueueBind(_queueName, "direct_exchange", _queueName);
+            channel.QueueBind(_queueName, "direct_exchange", _queueName);
 
-            var consumer = new EventingBasicConsumer(_channel); //создание consumer для канала
-            consumer.Received += reseiveCallback;   //добавление обработчика события приема сообщения
+            var consumer = new EventingBasicConsumer(channel); //создание consumer для канала
 
-            _channel.BasicConsume(_queueName, true, consumer);  //стартуем
+            consumer.Received += receiveCallBack;
+
+            channel.BasicConsume(_queueName, true, consumer);  //стартуем
         }
 
         #region dispose
@@ -56,8 +61,6 @@ namespace Messaging
             if (_disposed) return;
             if (disposing)
             {
-                _connection.Dispose();
-                _channel.Dispose();
             }
             _disposed = true;
         }

@@ -3,6 +3,7 @@ using Common.DAL.Repositories;
 using MDA.Restaurant.Services;
 using Messaging;
 using Microsoft.AspNetCore.Mvc;
+using Notification;
 
 namespace MDA.Restaurant.Controllers;
 
@@ -101,6 +102,9 @@ public class TableController : Controller
         bool result = await _repository.BookingTableByNumbAsync(tableNumb);
 
         _produser.Send(result ? $"Готово! Ваш столик номер {tableNumb}" : "К сожалению сейчас все столики заняты.");
+
+        var consumer = new Consumer().SetQueueAndHost("BookingNotification", "localhost");
+        var worker = new Worker();
 
         if (!result) return Ok("К сожалению сейчас все столики заняты.");
         return Ok($"Готово! Ваш столик номер {tableNumb}");

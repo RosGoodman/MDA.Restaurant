@@ -156,7 +156,7 @@ public class TableRepository : ITableRepository
 
             //обновление состояния стола в БД.
             table.State = Enums.State.Booked;
-            UpdateAsync(table);
+            Update(table);
             transaction.Commit();
 
             return true;
@@ -213,10 +213,9 @@ public class TableRepository : ITableRepository
     /// <summary> Снять все брони столиков. Асинхронно. </summary>
     public async void RemovingAllReservationsAsync()
     {
+        var transaction = _context.ContextBeginTransaction();
         try
         {
-            var transaction = _context.ContextBeginTransaction();
-
             var tables = await _context.Tables.Where(t => t.State == Enums.State.Booked).ToListAsync();
             if (tables is null) return;
             foreach (var table in tables)
@@ -229,7 +228,11 @@ public class TableRepository : ITableRepository
 
             transaction.Commit();
         }
-        catch(Exception ex) { _logger.LogError(ex, "Ошибка при попытке снять все брони."); }
+        catch(Exception ex) 
+        { 
+            transaction.Rollback();
+            _logger.LogError(ex, "Ошибка при попытке снять все брони."); 
+        }
     }
 
     /// <summary> Обновить данные стола в БД. </summary>
