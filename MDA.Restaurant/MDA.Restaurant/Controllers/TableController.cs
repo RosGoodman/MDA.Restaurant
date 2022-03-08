@@ -1,6 +1,7 @@
 ﻿using Common.DAL.Models;
 using Common.DAL.Repositories;
 using MDA.Restaurant.Services;
+using Messaging;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MDA.Restaurant.Controllers;
@@ -12,12 +13,16 @@ public class TableController : Controller
 {
     private readonly ITableRepository _repository;
     private readonly ILogger _logger;
+    private readonly IProducer _produser;
 
     /// <summary> Конструктор контроллера. </summary>
     /// <param name="repository"> Репозиторий. </param>
     /// <param name="logger"> Логгер. </param>
-    public TableController(ITableRepository repository, ILogger<TableController> logger)
+    /// <param name="produser">  </param>
+    public TableController(ITableRepository repository, ILogger<TableController> logger, IProducer produser)
     {
+        _produser = produser.SetQueueAndHost("BookingNotification", "localhost");
+
         _repository = repository;
         _logger = logger;
         _logger.LogDebug(1, "Логгер встроен в TableController");
@@ -94,6 +99,8 @@ public class TableController : Controller
         _logger.LogInformation(1, "Выполнение запроса на асинхронное бронирование экземпляра TableModel в БД.");
         new ConsoleWriter().PhoneGreeting();
         bool result = await _repository.BookingTableByNumbAsync(tableNumb);
+
+        _produser.Send(result ? $"Готово! Ваш столик номер {tableNumb}" : "К сожалению сейчас все столики заняты.");
 
         if (!result) return Ok("К сожалению сейчас все столики заняты.");
         return Ok($"Готово! Ваш столик номер {tableNumb}");

@@ -1,25 +1,25 @@
 ﻿
 using RabbitMQ.Client;
-using System;
 using System.Text;
 
 namespace Messaging
 {
-    public class Produser : IDisposable
+    public class Producer : IProducer
     {
-        private readonly string _queueName;
-        private readonly IConnection _connection;
-        private readonly IModel _channel;
+        private string _queueName;
+        private IConnection _connection;
+        private IModel _channel;
 
         private bool _disposed = false;
 
-        public Produser(string queueName, string hostName)
+        public IProducer SetQueueAndHost(string queueName, string hostName)
         {
             _queueName = queueName;
             var factory = new ConnectionFactory() { HostName = hostName };
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
+            return this;
         }
 
         public void Send(string message)
@@ -34,7 +34,7 @@ namespace Messaging
 
         #region dispose
 
-        ~Produser()
+        ~Producer()
         {
             Dispose(false);
         }

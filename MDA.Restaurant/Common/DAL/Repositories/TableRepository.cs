@@ -53,9 +53,10 @@ public class TableRepository : ITableRepository
     /// <returns> Номер забронированного столика или -1. </returns>
     public int BookingTable(int seatsCount)
     {
+        using var transaction = _context.ContextBeginTransaction();
+
         try
         {
-            using var transaction = _context.ContextBeginTransaction();
             var table = _context.Tables.Where(t => t.State == 0 && t.SeatsCount >= seatsCount).FirstOrDefault();
 
             //задержка для имитации работы сотрудников
@@ -70,7 +71,11 @@ public class TableRepository : ITableRepository
 
             return table.Id;
         }
-        catch (Exception ex) { _logger.LogError(ex, "ошибка при попытке бронирования столика."); }
+        catch (Exception ex) 
+        { 
+            transaction.Rollback();
+            _logger.LogError(ex, "ошибка при попытке бронирования столика."); 
+        }
         return -1;
     }
 
@@ -79,10 +84,9 @@ public class TableRepository : ITableRepository
     /// <returns> Номер забронированного столика или -1. </returns>
     public async Task<int> BookingTableAsync(int seatsCount)
     {
+        using var transaction = _context.ContextBeginTransaction();
         try
         {
-            using var transaction = _context.ContextBeginTransaction();
-
             var table = await _context.Tables.Where(t => t.State == 0 && t.SeatsCount >= seatsCount).FirstOrDefaultAsync();
 
             //задержка для имитации работы сотрудников
@@ -97,7 +101,11 @@ public class TableRepository : ITableRepository
 
             return table.Id;
         }
-        catch (Exception ex) { _logger.LogError(ex, "ошибка при попытке бронирования столика."); }
+        catch (Exception ex) 
+        { 
+            transaction.Rollback();
+            _logger.LogError(ex, "ошибка при попытке бронирования столика."); 
+        }
         return -1;
     }
 
@@ -106,9 +114,9 @@ public class TableRepository : ITableRepository
     /// <returns> Результат операции. </returns>
     public bool BookingTableByNumb(int tableNumb)
     {
+        using var transaction = _context.ContextBeginTransaction();
         try
         {
-            using var transaction = _context.ContextBeginTransaction();
             var table = _context.Tables.Where(t => t.State == 0 && t.Id >= tableNumb).FirstOrDefault();
 
             //задержка для имитации работы сотрудников
@@ -123,7 +131,11 @@ public class TableRepository : ITableRepository
 
             return true;
         }
-        catch (Exception ex) { _logger.LogError(ex, "ошибка при попытке бронирования столика."); }
+        catch (Exception ex) 
+        { 
+            transaction?.Rollback();
+            _logger.LogError(ex, "ошибка при попытке бронирования столика."); 
+        }
         return false;
     }
 
@@ -132,10 +144,9 @@ public class TableRepository : ITableRepository
     /// <returns> Результат операции. </returns>
     public async Task<bool> BookingTableByNumbAsync(int tableNumb)
     {
+        using var transaction = _context.ContextBeginTransaction();
         try
         {
-            using var transaction = _context.ContextBeginTransaction();
-
             var table = await _context.Tables.Where(t => t.State == 0 && t.Id >= tableNumb).FirstOrDefaultAsync();
 
             //задержка для имитации работы сотрудников
@@ -150,7 +161,11 @@ public class TableRepository : ITableRepository
 
             return true;
         }
-        catch (Exception ex) { _logger.LogError(ex, "ошибка при попытке бронирования столика."); }
+        catch (Exception ex) 
+        {
+            transaction.Rollback();
+            _logger.LogError(ex, "ошибка при попытке бронирования столика.");
+        }
         return false;
     }
 

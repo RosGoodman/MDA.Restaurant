@@ -35,10 +35,11 @@
         <member name="T:MDA.Restaurant.Controllers.TableController">
             <summary> Контроллер столиков. </summary>
         </member>
-        <member name="M:MDA.Restaurant.Controllers.TableController.#ctor(Common.DAL.Repositories.ITableRepository,Microsoft.Extensions.Logging.ILogger{MDA.Restaurant.Controllers.TableController})">
+        <member name="M:MDA.Restaurant.Controllers.TableController.#ctor(Common.DAL.Repositories.ITableRepository,Microsoft.Extensions.Logging.ILogger{MDA.Restaurant.Controllers.TableController},Messaging.IProducer)">
             <summary> Конструктор контроллера. </summary>
             <param name="repository"> Репозиторий. </param>
             <param name="logger"> Логгер. </param>
+            <param name="produser">  </param>
         </member>
         <member name="M:MDA.Restaurant.Controllers.TableController.Create(Common.DAL.Models.TableModel)">
             <summary> Создать столик. </summary>
