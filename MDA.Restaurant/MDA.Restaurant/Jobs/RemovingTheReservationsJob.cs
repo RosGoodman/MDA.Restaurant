@@ -15,6 +15,6 @@ public class RemovingTheReservationsJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        _repository.RemovingAllReservationsAsync();
+        _repository.RemovingAllReservations();
     }
 }

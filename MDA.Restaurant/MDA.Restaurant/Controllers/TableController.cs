@@ -36,7 +36,7 @@ public class TableController : Controller
     public IActionResult Create(TableModel table)
     {
         _logger.LogInformation(1, "Выполнение запроса на создание экземпляра TableModel в БД.");
-        _repository.CreateAsync(table);
+        _repository.Create(table);
         return Ok();
     }
 
@@ -47,7 +47,7 @@ public class TableController : Controller
     public IActionResult Delete(int id)
     {
         _logger.LogInformation(1, "Выполнение запроса на удаление экземпляра TableModel из БД.");
-        _repository.DeleteAsync(id);
+        _repository.Delete(id);
         return Ok();
     }
 
@@ -55,10 +55,10 @@ public class TableController : Controller
     /// <param name="id"> Номер столика. </param>
     /// <returns> Экземпляр столика. </returns>
     [HttpGet("GetTable")]
-    public async Task<IActionResult> Get(int id)
+    public IActionResult Get(int id)
     {
         _logger.LogInformation(1, "Выполнение запроса на получение экземпляра TableModel из БД.");
-        var table = await _repository.GetByIdAsync(id);
+        var table = _repository.GetById(id);
         if(table is null) return NotFound();
         return Ok(table);
     }
@@ -131,7 +131,7 @@ public class TableController : Controller
     public IActionResult Update(TableModel table)
     {
         _logger.LogInformation(1, "Выполнение запроса на обновление экземпляра TableModel в БД.");
-        _repository.UpdateAsync(table);
+        _repository.Update(table);
         return Ok();
     }
 }

@@ -11,25 +11,30 @@ public interface ITableRepository : IRepository<TableModel>
 {
     /// <summary> Обновить данные экземпляра. </summary>
     /// <param name="entity"> Экземпляр класса с новыми данными. </param>
-    public void Update(TableModel entity);
+    public void UpdateAsync(TableModel entity);
+
     /// <summary> Забронировать столик. Асинхронная операция. </summary>
     /// <param name="seatsCount"> Минимальное кол-во мест. </param>
     /// <returns> Номер забронированного столика или -1. </returns>
     public Task<int> BookingTableAsync(int seatsCount);
+
     /// <summary> Забронировать столик. </summary>
     /// <param name="seatsCount"> Минимальное кол-во мест. </param>
     /// <returns> Номер забронированного столика или -1. </returns>
     public int BookingTable(int seatsCount);
+
     /// <summary> Забронировать столик по его номеру. </summary>
     /// <param name="tableNumb"> Номер столика. </param>
     /// <returns> Результат операции. </returns>
     public Task<bool> BookingTableByNumbAsync(int tableNumb);
+
     /// <summary> Забронировать столик по его номеру. </summary>
     /// <param name="tableNumb"> Номер столика. </param>
     /// <returns> Результат операции. </returns>
     public bool BookingTableByNumb(int tableNumb);
+
     /// <summary> Снять все брони столиков. Асинхронно. </summary>
-    public void RemovingAllReservationsAsync();
+    public void RemovingAllReservations();
 }
 
 /// <summary> Репозиторий TableModel. </summary>
@@ -66,7 +71,7 @@ public class TableRepository : ITableRepository
 
             //обновление состояния стола в БД.
             table.State = Enums.State.Booked;
-            UpdateAsync(table);
+            _context.Tables.Update(table);
             transaction.Commit();
 
             return table.Id;
@@ -96,7 +101,7 @@ public class TableRepository : ITableRepository
 
             //обновление состояния стола в БД.
             table.State = Enums.State.Booked;
-            UpdateAsync(table);
+            _context.Tables.Update(table);
             transaction.Commit();
 
             return table.Id;
@@ -126,7 +131,7 @@ public class TableRepository : ITableRepository
 
             //обновление состояния стола в БД.
             table.State = Enums.State.Booked;
-            UpdateAsync(table);
+            _context.Tables.Update(table);
             transaction.Commit();
 
             return true;
@@ -156,7 +161,7 @@ public class TableRepository : ITableRepository
 
             //обновление состояния стола в БД.
             table.State = Enums.State.Booked;
-            Update(table);
+            _context.Tables.Update(table);
             transaction.Commit();
 
             return true;
@@ -171,11 +176,11 @@ public class TableRepository : ITableRepository
 
     /// <summary> Записать экземпляр в БД. </summary>
     /// <param name="entity"> Записываемый ресторан. </param>
-    public async void CreateAsync(TableModel entity)
+    public void Create(TableModel entity)
     {
         try
         {
-            await _context.Tables.AddAsync(entity);
+            _context.Tables.Add(entity);
             _context.ContextSaveChanges();
         }
         catch (Exception ex) { _logger.LogError(ex, "Ошибка при попытке записать экземпляр стола в БД."); }
@@ -183,11 +188,11 @@ public class TableRepository : ITableRepository
 
     /// <summary> Удалить по ID. </summary>
     /// <param name="id"> ID стола </param>
-    public async void DeleteAsync(int id)
+    public void Delete(int id)
     {
         try
         {
-            var tableModel = await _context.Tables.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var tableModel = _context.Tables.Where(x => x.Id == id).FirstOrDefault();
             if (tableModel is null) return;
 
             _context.Tables.Remove(tableModel);
@@ -199,11 +204,11 @@ public class TableRepository : ITableRepository
     /// <summary> Получить экземпляр стола по ID. </summary>
     /// <param name="id"> ID стола. </param>
     /// <returns> Полученный экземпляр. </returns>
-    public async Task<TableModel> GetByIdAsync(int id)
+    public TableModel GetById(int id)
     {
         try
         {
-            var table = await _context.Tables.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var table = _context.Tables.Where(x => x.Id == id).FirstOrDefault();
             return table;
         }
         catch (Exception ex) { _logger.LogError(ex, "Ошибка при попытке получить экземпляр стола из БД."); }
@@ -211,12 +216,12 @@ public class TableRepository : ITableRepository
     }
 
     /// <summary> Снять все брони столиков. Асинхронно. </summary>
-    public async void RemovingAllReservationsAsync()
+    public void RemovingAllReservations()
     {
         var transaction = _context.ContextBeginTransaction();
         try
         {
-            var tables = await _context.Tables.Where(t => t.State == Enums.State.Booked).ToListAsync();
+            var tables = _context.Tables.Where(t => t.State == Enums.State.Booked).ToList();
             if (tables is null) return;
             foreach (var table in tables)
             {

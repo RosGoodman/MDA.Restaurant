@@ -29,7 +29,7 @@ public class RestaurantController : Controller
     public IActionResult Create(RestaurantModel restaurant)
     {
         _logger.LogInformation(1, "Выполнение запроса на создание экземпляра RestaurantModel в БД.");
-        _repository.CreateAsync(restaurant);
+        _repository.Create(restaurant);
         return Ok();
     }
 
@@ -40,18 +40,18 @@ public class RestaurantController : Controller
     public IActionResult Delete(int id)
     {
         _logger.LogInformation(1, "Выполнение запроса на удаление экземпляра RestaurantModel из БД.");
-        _repository.DeleteAsync(id);
+        _repository.Delete(id);
         return Ok();
     }
 
     /// <summary> Получить ресторан по ID. </summary>
     /// <param name="id"> ID ресторана. </param>
     /// <returns> Экземпляр ресторана. </returns>
-    [HttpGet("GetRestaurant")]
-    public async Task<IActionResult> Get(int id)
+    [HttpGet("GetRestaurant/{id}")]
+    public async Task<IActionResult> Get([FromRoute]int id)
     {
         _logger.LogInformation(1, "Выполнение запроса на получение экземпляра RestaurantModel из БД.");
-        var restaurant = await _repository.GetByIdAsync(id);
+        var restaurant = _repository.GetById(id);
         if (restaurant is null) return NotFound();
         return Ok(restaurant);
     }
@@ -63,7 +63,7 @@ public class RestaurantController : Controller
     public IActionResult UpdateAsync(RestaurantModel table)
     {
         _logger.LogInformation(1, "Выполнение запроса на асинхронное обновление экземпляра RestaurantModel в БД.");
-        _repository.UpdateAsync(table);
+        _repository.Update(table);
         return Ok();
     }
 }
