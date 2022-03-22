@@ -16,26 +16,17 @@ public class TableModel
 
     /// <summary> Состояние стола. </summary>
     [Required]
-    public State State { get; private set; }
+    public State State { get; set; }
 
     /// <summary> Кол-во мест. </summary>
     [Required]
-    public int SeatsCount { get; }
+    public int SeatsCount { get; set; }
 
     /// <summary> Навигационный ключ. </summary>
-    [ForeignKey("Restaurant")]
-    public int RestaurantId { get; set; }
+    [ForeignKey("RestaurantModel")]
+    public int RestaurantModelId { get; set; }
 
     #endregion
-
-    /// <summary> Конструктр класса. </summary>
-    /// <param name="id"> Id стола. </param>
-    public TableModel(int id)
-    {
-        Id = id;
-        State = State.Free;
-        SeatsCount = new Random().Next(2, 5);
-    }
 
     /// <summary> Назначить состояние стола. </summary>
     /// <param name="state"> Состояние стола. </param>
